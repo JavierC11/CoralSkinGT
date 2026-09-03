@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Coral Skin GT - Tu destino de cosméticos y skincare original en Guatemala. Marcas exclusivas de Sephora USA: Rare Beauty, Rhode, The Ordinary, By Mario, Patrick Ta, Charlotte Tilbury, Centella, e.l.f. y NYX." />
+  <meta name="keywords" content="Coral Skin GT, maquillaje Guatemala, skincare Guatemala, Rhode Guatemala, Rare Beauty Guatemala, The Ordinary Guatemala, Sephora Guatemala, cosméticos originales" />
+  <title>Coral Skin GT | Belleza y Skincare Original en Guatemala</title>
+  
+  <link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="src/styles/main.css" />
+  <link rel="stylesheet" href="src/styles/animations.css" />
+  <link rel="stylesheet" href="src/styles/components.css" />
+  <link rel="stylesheet" href="src/styles/pages.css" />
+  <link rel="stylesheet" href="src/styles/admin.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-container">
+      <a href="#/" class="nav-logo" id="nav-logo">
+        <span class="logo-text">CoralSkin</span><span class="logo-accent">GT</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#/" class="nav-link active" data-page="home">Inicio</a></li>
+        <li><a href="#/catalogo" class="nav-link" data-page="catalog">Catálogo</a></li>
+        <li><a href="#/nosotros" class="nav-link" data-page="about">Nosotros</a></li>
+        <li><a href="#/contacto" class="nav-link" data-page="contact">Contacto</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Cart Toggle Button -->
+        <button id="nav-cart-btn" class="nav-cart-btn" aria-label="Abrir carrito de compras">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge-count" id="nav-cart-badge">0</span>
+        </button>
+
+        <a href="https://wa.me/50253481870?text=Hola%20Coral%20Skin%20GT!%20Me%20interesa%20un%20producto" 
+           class="btn btn-primary btn-sm nav-cta" target="_blank" rel="noopener" id="nav-whatsapp-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.317 0-4.47-.753-6.209-2.028l-.353-.271-3.656 1.225 1.225-3.656-.271-.353A9.935 9.935 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/>
+          </svg>
+          Pedir
+        </a>
+
+        <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content App -->
+  <main id="app"></main>
+
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/50253481870?text=Hola%20Coral%20Skin%20GT!%20Me%20gustar%C3%ADa%20hacer%20un%20pedido" 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener"
+     id="whatsapp-float"
+     aria-label="Contactar por WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.317 0-4.47-.753-6.209-2.028l-.353-.271-3.656 1.225 1.225-3.656-.271-.353A9.935 9.935 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/>
+    </svg>
+  </a>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#/" class="footer-logo">
+            <span class="logo-text">CoralSkin</span><span class="logo-accent">GT</span>
+          </a>
+          <p class="footer-desc">Tu tienda de belleza y skincare premium en Guatemala. Cosméticos 100% auténticos importados de Sephora USA.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="social-link" id="footer-facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="social-link" id="footer-instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+            <a href="https://wa.me/50253481870" target="_blank" rel="noopener" aria-label="WhatsApp" class="social-link" id="footer-whatsapp">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.317 0-4.47-.753-6.209-2.028l-.353-.271-3.656 1.225 1.225-3.656-.271-.353A9.935 9.935 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#/">Inicio</a></li>
+            <li><a href="#/catalogo">Catálogo Completo</a></li>
+            <li><a href="#/checkout">Finalizar Compra</a></li>
+            <li><a href="#/nosotros">Sobre Nosotros</a></li>
+            <li><a href="#/contacto">Contacto y Soporte</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Marcas en Stock</h4>
+          <ul>
+            <li><a href="#/catalogo">Rare Beauty</a></li>
+            <li><a href="#/catalogo">Rhode</a></li>
+            <li><a href="#/catalogo">The Ordinary</a></li>
+            <li><a href="#/catalogo">Patrick Ta & By Mario</a></li>
+            <li><a href="#/catalogo">e.l.f. & NYX</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Contacto Directo</h4>
+          <ul>
+            <li><a href="https://wa.me/50253481870" target="_blank" rel="noopener">+502 5348 1870</a></li>
+            <li><a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram @coralskin_gt</a></li>
+            <li><a href="#/contacto">Envíos a todo el país</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Coral Skin GT. Todos los derechos reservados.</p>
+        <p class="footer-note">Productos 100% auténticos importados de Sephora USA</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

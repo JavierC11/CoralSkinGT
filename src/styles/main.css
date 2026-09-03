@@ -1,0 +1,258 @@
+/* ================================
+   MakeUp GT - Design System
+   ================================ */
+
+/* --- CSS Custom Properties --- */
+:root {
+  /* Colors */
+  --clr-primary: #C4788D;
+  --clr-primary-dark: #A85E72;
+  --clr-primary-light: #D4909F;
+  --clr-secondary: #E8B4B8;
+  --clr-secondary-light: #F0D0D3;
+  --clr-accent: #D4A574;
+  --clr-accent-light: #E2C4A0;
+  --clr-dark: #1A1A2E;
+  --clr-dark-soft: #2D2D44;
+  --clr-cream: #FDF6F0;
+  --clr-cream-dark: #F5EDE5;
+  --clr-white: #FFFFFF;
+  --clr-text: #2D2D2D;
+  --clr-text-light: #6B6B7B;
+  --clr-text-muted: #9B9BAB;
+  --clr-border: #E8E0D8;
+  --clr-success: #6BBF8A;
+  --clr-warning: #F0C45A;
+  --clr-error: #E8636F;
+
+  /* Gradients */
+  --grad-primary: linear-gradient(135deg, #C4788D 0%, #D4A574 100%);
+  --grad-hero: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 50%, #3D2040 100%);
+  --grad-card: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(253,246,240,0.9) 100%);
+  --grad-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+
+  /* Typography */
+  --ff-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --ff-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.5rem;
+  --fs-4xl: 3.5rem;
+  --fs-5xl: 4.5rem;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Spacing */
+  --sp-xs: 0.25rem;
+  --sp-sm: 0.5rem;
+  --sp-md: 1rem;
+  --sp-lg: 1.5rem;
+  --sp-xl: 2rem;
+  --sp-2xl: 3rem;
+  --sp-3xl: 4rem;
+  --sp-4xl: 6rem;
+  --sp-5xl: 8rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
+  --shadow-md: 0 4px 12px rgba(26,26,46,0.08);
+  --shadow-lg: 0 8px 30px rgba(26,26,46,0.12);
+  --shadow-xl: 0 16px 50px rgba(26,26,46,0.16);
+  --shadow-glow: 0 0 30px rgba(196,120,141,0.3);
+  --shadow-card: 0 4px 20px rgba(26,26,46,0.06), 0 1px 3px rgba(26,26,46,0.04);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 500ms ease;
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-navbar: 1000;
+  --z-modal: 2000;
+  --z-float: 3000;
+
+  /* Layout */
+  --nav-height: 80px;
+  --max-width: 1200px;
+  --max-width-sm: 900px;
+}
+
+/* --- CSS Reset --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--ff-body);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  line-height: 1.7;
+  color: var(--clr-text);
+  background-color: var(--clr-cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--transition-fast);
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-heading);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  color: var(--clr-dark);
+}
+
+/* --- Global Utilities --- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--sp-xl);
+}
+
+.section {
+  padding: var(--sp-5xl) 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--sp-3xl);
+}
+
+.section-header h2 {
+  font-size: var(--fs-3xl);
+  margin-bottom: var(--sp-md);
+  position: relative;
+  display: inline-block;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--grad-primary);
+  border-radius: var(--radius-full);
+}
+
+.section-header p {
+  color: var(--clr-text-light);
+  font-size: var(--fs-md);
+  max-width: 600px;
+  margin: var(--sp-lg) auto 0;
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clr-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-secondary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-primary);
+}
+
+/* --- Selection --- */
+::selection {
+  background: var(--clr-primary);
+  color: var(--clr-white);
+}
+
+/* --- Page Transitions --- */
+#app {
+  min-height: calc(100vh - var(--nav-height));
+  opacity: 1;
+  transition: opacity var(--transition-base);
+}
+
+#app.page-transitioning {
+  opacity: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  :root {
+    --fs-4xl: 2.5rem;
+    --fs-3xl: 2rem;
+    --fs-2xl: 1.5rem;
+    --sp-5xl: 4rem;
+    --sp-4xl: 3rem;
+    --nav-height: 70px;
+  }
+
+  .container {
+    padding: 0 var(--sp-md);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --fs-4xl: 2rem;
+    --fs-3xl: 1.75rem;
+    --fs-2xl: 1.375rem;
+  }
+}
