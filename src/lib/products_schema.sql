@@ -47,22 +47,22 @@ CREATE TRIGGER set_updated_at
 -- 3. Row Level Security
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
--- Políticas: lectura pública, escritura pública (admin usa la clave anon)
+-- Políticas: lectura pública, escritura solo autenticados
 DROP POLICY IF EXISTS "Lectura publica productos" ON public.products;
 CREATE POLICY "Lectura publica productos"
   ON public.products FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Insertar productos" ON public.products;
 CREATE POLICY "Insertar productos"
-  ON public.products FOR INSERT WITH CHECK (true);
+  ON public.products FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Actualizar productos" ON public.products;
 CREATE POLICY "Actualizar productos"
-  ON public.products FOR UPDATE USING (true);
+  ON public.products FOR UPDATE USING (auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Eliminar productos" ON public.products;
 CREATE POLICY "Eliminar productos"
-  ON public.products FOR DELETE USING (true);
+  ON public.products FOR DELETE USING (auth.role() = 'authenticated');
 
 -- 4. Insertar los 30 productos del inventario
 INSERT INTO public.products (product_id, name, full_name, brand, brand_slug, category, category_slug, type, tone, price, stock, status, badge, description, benefit, color, emoji) VALUES
@@ -121,14 +121,14 @@ CREATE POLICY "Lectura publica imagenes"
 DROP POLICY IF EXISTS "Subir imagenes productos" ON storage.objects;
 CREATE POLICY "Subir imagenes productos"
   ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'product-images');
+  WITH CHECK (bucket_id = 'product-images' AND auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Actualizar imagenes productos" ON storage.objects;
 CREATE POLICY "Actualizar imagenes productos"
   ON storage.objects FOR UPDATE
-  USING (bucket_id = 'product-images');
+  USING (bucket_id = 'product-images' AND auth.role() = 'authenticated');
 
 DROP POLICY IF EXISTS "Eliminar imagenes productos" ON storage.objects;
 CREATE POLICY "Eliminar imagenes productos"
   ON storage.objects FOR DELETE
-  USING (bucket_id = 'product-images');
+  USING (bucket_id = 'product-images' AND auth.role() = 'authenticated');

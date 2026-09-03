@@ -5,29 +5,37 @@
 import { getSupabaseUrl, getSupabaseKey, isSupabaseConfigured } from '../lib/supabase.js';
 import { invalidateProductCache } from '../data/productService.js';
 
-const ADMIN_PASSWORD = 'CoralCol5';
-const SESSION_KEY = 'coralskin_admin_session';
+const SESSION_KEY = 'coralskin_admin_token';
 
 // --- Auth ---
 function isLoggedIn() {
-  return sessionStorage.getItem(SESSION_KEY) === 'true';
+  return !!sessionStorage.getItem(SESSION_KEY);
 }
 
-function login(password) {
-  if (password === ADMIN_PASSWORD) {
-    sessionStorage.setItem(SESSION_KEY, 'true');
-    return true;
-  }
-  return false;
+async function login(email, password) {
+  const res = await fetch(`${getSupabaseUrl()}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': getSupabaseKey(),
+    },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (!res.ok) return false;
+
+  const data = await res.json();
+  sessionStorage.setItem(SESSION_KEY, data.access_token);
+  return true;
 }
 
 // --- Supabase helpers ---
 function sbHeaders() {
-  const key = getSupabaseKey();
+  const token = sessionStorage.getItem(SESSION_KEY) || getSupabaseKey();
   return {
     'Content-Type': 'application/json',
-    'apikey': key,
-    'Authorization': `Bearer ${key}`,
+    'apikey': getSupabaseKey(),
+    'Authorization': `Bearer ${token}`, // Usa el token seguro si está logueado
   };
 }
 
@@ -118,12 +126,16 @@ export function renderAdmin() {
             <p>Coral Skin GT</p>
             <form id="admin-login-form">
               <div class="admin-field">
-                <label>Contraseña</label>
-                <input type="password" id="admin-password" placeholder="Ingresa la contraseña" autocomplete="off" />
+                <label>Correo Electrónico</label>
+                <input type="email" id="admin-email" placeholder="admin@coralskingt.com" required autocomplete="email" />
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+              <div class="admin-field" style="margin-top: 10px;">
+                <label>Contraseña</label>
+                <input type="password" id="admin-password" placeholder="Ingresa la contraseña" required autocomplete="current-password" />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id="admin-login-btn">Ingresar</button>
               <div class="admin-error" id="admin-login-error" style="display:none;">
-                ❌ Contraseña incorrecta
+                ❌ Credenciales incorrectas
               </div>
             </form>
           </div>
@@ -236,12 +248,12 @@ export function renderAdmin() {
               </div>
               <div class="admin-field full-width">
                 <label>📸 Foto del producto</label>
-                <div class="admin-upload-zone" id="admin-upload-zone">
+                <label class="admin-upload-zone" id="admin-upload-zone" for="admin-image-input">
                   <input type="file" id="admin-image-input" accept="image/*" style="display:none" />
                   <div class="admin-upload-preview" id="admin-upload-preview">
                     <span>Toca o arrastra una imagen aquí</span>
                   </div>
-                </div>
+                </label>
               </div>
             </div>
 
@@ -276,14 +288,27 @@ export function initAdminPage() {
 
 function initLoginForm() {
   const form = document.getElementById('admin-login-form');
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const btn = document.getElementById('admin-login-btn');
+    const errEl = document.getElementById('admin-login-error');
+    
+    btn.textContent = 'Verificando...';
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    const email = document.getElementById('admin-email').value;
     const pw = document.getElementById('admin-password').value;
-    if (login(pw)) {
+    
+    const success = await login(email, pw);
+    
+    if (success) {
       window.location.hash = '#/admin';
       window.location.reload();
     } else {
-      document.getElementById('admin-login-error').style.display = 'block';
+      errEl.style.display = 'block';
+      btn.textContent = 'Ingresar';
+      btn.disabled = false;
     }
   });
 }
@@ -490,9 +515,6 @@ function initAddForm() {
   const imageInput = document.getElementById('admin-image-input');
   const preview = document.getElementById('admin-upload-preview');
   let selectedFile = null;
-
-  // Click to upload
-  uploadZone?.addEventListener('click', () => imageInput?.click());
 
   // Drag & drop
   uploadZone?.addEventListener('dragover', (e) => {
