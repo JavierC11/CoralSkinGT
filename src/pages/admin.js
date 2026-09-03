@@ -357,10 +357,14 @@ async function loadProducts() {
     container.innerHTML = products.map(p => `
       <div class="admin-product-card ${!p.is_active ? 'admin-inactive' : ''}" data-id="${p.product_id}">
         <div class="admin-product-image">
-          ${p.image_url
-            ? `<img src="${p.image_url}" alt="${p.name}" />`
-            : `<div class="admin-product-emoji">${p.emoji || '📦'}</div>`
-          }
+          <label for="upload-${p.product_id}" class="admin-image-label" title="Cambiar foto">
+            ${p.image_url
+              ? `<img src="${p.image_url}" alt="${p.name}" />`
+              : `<div class="admin-product-emoji">${p.emoji || '📦'}</div>`
+            }
+            <div class="admin-image-overlay">📷</div>
+          </label>
+          <input type="file" id="upload-${p.product_id}" class="admin-inline-upload" data-id="${p.product_id}" accept="image/*" style="display:none" />
         </div>
         <div class="admin-product-info">
           <div class="admin-product-name">${p.name}</div>
@@ -421,6 +425,29 @@ async function loadProducts() {
           btn.textContent = '❌';
           setTimeout(() => { btn.textContent = '💾'; btn.disabled = false; }, 2000);
           alert('Error al guardar: ' + err.message);
+        }
+      });
+    });
+
+    // Inline image upload handlers
+    container.querySelectorAll('.admin-inline-upload').forEach(input => {
+      input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const id = input.dataset.id;
+        const label = container.querySelector(`label[for="upload-${id}"]`);
+        const originalContent = label.innerHTML;
+
+        label.innerHTML = '<div style="font-size:1.5rem;">⏳</div>';
+
+        try {
+          const imageUrl = await uploadImage(file, id);
+          await updateProduct(id, { image_url: imageUrl });
+          label.innerHTML = `<img src="${imageUrl}" alt="Uploaded" /><div class="admin-image-overlay">📷</div>`;
+        } catch (err) {
+          alert('Error al subir la imagen: ' + err.message);
+          label.innerHTML = originalContent;
         }
       });
     });
