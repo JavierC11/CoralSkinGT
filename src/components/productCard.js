@@ -27,9 +27,12 @@ export function createProductCard(product, index = 0) {
     <div class="product-card animate-fade-in-up delay-${Math.min((index % 4) + 1, 4)}" id="product-${product.id}">
       <div class="product-card-image">
         ${badge ? `<span class="product-badge ${badge.class}">${badge.text}</span>` : ''}
-        <div class="product-img-placeholder" style="background: ${bgGradient};">
-          <span>${product.emoji}</span>
-        </div>
+        ${product.imageUrl
+          ? `<img src="${product.imageUrl}" alt="${product.name}" class="product-img-real" loading="lazy" />`
+          : `<div class="product-img-placeholder" style="background: ${bgGradient};">
+              <span>${product.emoji}</span>
+            </div>`
+        }
         
         <div class="product-card-overlay">
           <button type="button" class="btn btn-primary btn-sm btn-add-cart" data-id="${product.id}" id="btn-add-${product.id}">
