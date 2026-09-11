@@ -92,6 +92,20 @@ export async function initCatalogFilters() {
 
   if (!grid) return;
 
+  // --- Group products by name+brand (for variant/tone grouping) ---
+  function groupProducts(productList) {
+    const groups = new Map();
+    for (const p of productList) {
+      const key = `${p.name}|||${p.brand}`;
+      if (!groups.has(key)) {
+        groups.set(key, { ...p, variants: [p] });
+      } else {
+        groups.get(key).variants.push(p);
+      }
+    }
+    return Array.from(groups.values());
+  }
+
   // Populate filter buttons dynamically
   if (catContainer) {
     catContainer.innerHTML = categories.map(c => `
@@ -110,9 +124,11 @@ export async function initCatalogFilters() {
   }
 
   // Initial render
-  grid.innerHTML = products.map((product, i) => createProductCard(product, i)).join('');
+  const grouped = groupProducts(products);
+  grid.innerHTML = grouped.map((product, i) => createProductCard(product, i)).join('');
+  initToneSelectors(grid);
   if (countEl) {
-    countEl.innerHTML = `Mostrando <strong>${products.length}</strong> productos disponibles`;
+    countEl.innerHTML = `Mostrando <strong>${grouped.length}</strong> productos disponibles`;
   }
 
   // --- Filter logic ---
@@ -133,21 +149,24 @@ export async function initCatalogFilters() {
       return brandMatch && catMatch && searchMatch;
     });
 
+    const filteredGrouped = groupProducts(filtered);
+
     grid.style.opacity = '0';
     grid.style.transform = 'translateY(10px)';
 
     setTimeout(() => {
-      if (filtered.length === 0) {
+      if (filteredGrouped.length === 0) {
         grid.style.display = 'none';
         noResults.style.display = 'block';
       } else {
         grid.style.display = 'grid';
         noResults.style.display = 'none';
-        grid.innerHTML = filtered.map((product, i) => createProductCard(product, i)).join('');
+        grid.innerHTML = filteredGrouped.map((product, i) => createProductCard(product, i)).join('');
+        initToneSelectors(grid);
       }
 
       if (countEl) {
-        countEl.innerHTML = `Mostrando <strong>${filtered.length}</strong> de ${products.length} productos`;
+        countEl.innerHTML = `Mostrando <strong>${filteredGrouped.length}</strong> de ${grouped.length} productos`;
       }
 
       requestAnimationFrame(() => {
@@ -155,6 +174,87 @@ export async function initCatalogFilters() {
         grid.style.transform = 'translateY(0)';
       });
     }, 150);
+  }
+
+  // --- Tone selector logic ---
+  function initToneSelectors(container) {
+    container.querySelectorAll('.tone-option').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const card = dot.closest('.product-card');
+        if (!card) return;
+
+        // Update active dot
+        card.querySelectorAll('.tone-option').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+
+        // Get variant data from data attributes
+        const variantId = dot.dataset.id;
+        const variantTone = dot.dataset.tone;
+        const variantColor = dot.dataset.color;
+        const variantImage = dot.dataset.image;
+        const variantEmoji = dot.dataset.emoji;
+        const variantDescription = dot.dataset.description || '';
+        const variantBenefit = dot.dataset.benefit || '';
+
+        // Update card content
+        const toneLabel = card.querySelector('.product-tone-badge strong');
+        if (toneLabel) toneLabel.textContent = variantTone;
+
+        const toneDot = card.querySelector('.product-tone-badge .tone-dot');
+        if (toneDot) toneDot.style.backgroundColor = variantColor;
+
+        const descEl = card.querySelector('.product-description');
+        if (descEl && variantDescription) descEl.textContent = variantDescription;
+
+        const benefitEl = card.querySelector('.product-benefit');
+        if (benefitEl && variantBenefit) benefitEl.innerHTML = variantBenefit;
+
+        // Update image
+        const imgContainer = card.querySelector('.product-card-image');
+        const existingImg = imgContainer?.querySelector('.product-img-real');
+        const existingPlaceholder = imgContainer?.querySelector('.product-img-placeholder');
+
+        if (variantImage) {
+          if (existingImg) {
+            existingImg.src = variantImage;
+            existingImg.alt = variantTone;
+          } else if (existingPlaceholder) {
+            const img = document.createElement('img');
+            img.src = variantImage;
+            img.alt = variantTone;
+            img.className = 'product-img-real';
+            img.loading = 'lazy';
+            existingPlaceholder.replaceWith(img);
+          }
+        } else {
+          // No image - show emoji placeholder
+          if (existingImg) {
+            const bgGradient = `linear-gradient(135deg, ${variantColor}35 0%, ${variantColor}15 50%, ${variantColor}50 100%)`;
+            const div = document.createElement('div');
+            div.className = 'product-img-placeholder';
+            div.style.background = bgGradient;
+            div.innerHTML = `<span>${variantEmoji || '✨'}</span>`;
+            existingImg.replaceWith(div);
+          } else if (existingPlaceholder) {
+            const bgGradient = `linear-gradient(135deg, ${variantColor}35 0%, ${variantColor}15 50%, ${variantColor}50 100%)`;
+            existingPlaceholder.style.background = bgGradient;
+            existingPlaceholder.querySelector('span').textContent = variantEmoji || '✨';
+          }
+        }
+
+        // Update add-to-cart buttons with new variant ID
+        card.querySelectorAll('.btn-add-cart').forEach(b => b.dataset.id = variantId);
+
+        // Update WhatsApp link
+        const waLink = card.querySelector('.btn-whatsapp');
+        if (waLink) {
+          const waMsg = encodeURIComponent(
+            `Hola Coral Skin GT! Me interesa el producto: ${card.querySelector('.product-name')?.textContent} (${card.querySelector('.product-brand')?.textContent}) Tono: ${variantTone} - Q${card.querySelector('.product-price')?.textContent?.replace(/[^\d]/g, '')}`
+          );
+          waLink.href = `https://wa.me/50253481870?text=${waMsg}`;
+        }
+      });
+    });
   }
 
   // Attach event listeners to the dynamically-created buttons

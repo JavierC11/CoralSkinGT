@@ -691,6 +691,37 @@
   border: 1px solid rgba(0,0,0,0.1);
 }
 
+/* --- Tone Selector (variant dots) --- */
+.tone-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--sp-sm);
+  flex-wrap: wrap;
+}
+
+.tone-option {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  padding: 0;
+  outline: none;
+}
+
+.tone-option:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.tone-option.active {
+  border-color: var(--clr-dark, #333);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--clr-dark, #333);
+}
+
 .product-description {
   font-size: var(--fs-xs);
   color: var(--clr-text-light);

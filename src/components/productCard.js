@@ -3,25 +3,41 @@
 // ==========================================
 
 export function createProductCard(product, index = 0) {
-  const statusMap = {
-    available: { text: 'Disponible', class: 'status-available' },
-    preorder: { text: 'Por encargo', class: 'status-preorder' },
-    out: { text: 'Agotado', class: 'status-out' },
-  };
-
   const badgeMap = {
     new: { text: 'Nuevo', class: 'badge-new' },
     bestseller: { text: 'Best Seller', class: 'badge-bestseller' },
   };
 
-  const status = statusMap[product.status] || statusMap.available;
   const badge = product.badge ? badgeMap[product.badge] : null;
-
   const bgGradient = `linear-gradient(135deg, ${product.color}35 0%, ${product.color}15 50%, ${product.color}50 100%)`;
 
   const whatsappMsg = encodeURIComponent(
     `Hola Coral Skin GT! Me interesa el producto: ${product.name} (${product.brand})${product.tone ? ` Tono: ${product.tone}` : ''} - Q${product.price}`
   );
+
+  // Check if this product has multiple tone variants
+  const variants = product.variants || [product];
+  const hasVariants = variants.length > 1;
+
+  // Build tone selector dots HTML
+  const toneSelector = hasVariants ? `
+    <div class="tone-selector">
+      ${variants.map((v, i) => `
+        <button type="button" 
+          class="tone-option ${i === 0 ? 'active' : ''}" 
+          style="background-color: ${v.color};"
+          title="${v.tone || 'Sin tono'}"
+          data-id="${v.id}"
+          data-tone="${v.tone || ''}"
+          data-color="${v.color || '#ccc'}"
+          data-image="${v.imageUrl || ''}"
+          data-emoji="${v.emoji || '✨'}"
+          data-description="${(v.description || '').replace(/"/g, '&quot;')}"
+          data-benefit="${(v.benefit || '').replace(/"/g, '&quot;')}"
+        ></button>
+      `).join('')}
+    </div>
+  ` : '';
 
   return `
     <div class="product-card animate-fade-in-up delay-${Math.min((index % 4) + 1, 4)}" id="product-${product.id}">
@@ -70,6 +86,8 @@ export function createProductCard(product, index = 0) {
             Tono: <strong>${product.tone}</strong>
           </div>
         ` : ''}
+
+        ${toneSelector}
 
         <p class="product-description">${product.description}</p>
         

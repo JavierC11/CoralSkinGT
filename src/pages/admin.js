@@ -396,6 +396,68 @@ async function loadProducts() {
           <div class="admin-control-group">
             <button class="btn btn-sm btn-outline admin-save-inline" data-id="${p.product_id}">💾</button>
           </div>
+          <div class="admin-control-group">
+            <button class="btn btn-sm btn-outline admin-edit-btn" data-id="${p.product_id}" title="Editar todos los campos">✏️</button>
+          </div>
+        </div>
+
+        <!-- Formulario expandible de edición completa -->
+        <div class="admin-edit-form" id="edit-form-${p.product_id}" style="display:none;">
+          <div class="admin-edit-form-grid">
+            <div class="admin-field">
+              <label>Nombre</label>
+              <input type="text" class="edit-name" value="${p.name || ''}" />
+            </div>
+            <div class="admin-field">
+              <label>Marca</label>
+              <input type="text" class="edit-brand" value="${p.brand || ''}" />
+            </div>
+            <div class="admin-field">
+              <label>Categoría</label>
+              <select class="edit-category">
+                <option value="Rostro" ${p.category === 'Rostro' ? 'selected' : ''}>Rostro</option>
+                <option value="Labios" ${p.category === 'Labios' ? 'selected' : ''}>Labios</option>
+                <option value="Ojos" ${p.category === 'Ojos' ? 'selected' : ''}>Ojos</option>
+                <option value="Skin Care" ${p.category === 'Skin Care' ? 'selected' : ''}>Skin Care</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label>Tipo</label>
+              <input type="text" class="edit-type" value="${p.type || ''}" />
+            </div>
+            <div class="admin-field">
+              <label>Tono</label>
+              <input type="text" class="edit-tone" value="${p.tone || ''}" />
+            </div>
+            <div class="admin-field">
+              <label>Etiqueta</label>
+              <select class="edit-badge">
+                <option value="" ${!p.badge ? 'selected' : ''}>Ninguna</option>
+                <option value="bestseller" ${p.badge === 'bestseller' ? 'selected' : ''}>⭐ Bestseller</option>
+                <option value="new" ${p.badge === 'new' ? 'selected' : ''}>🆕 Nuevo</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label>Color tarjeta</label>
+              <input type="color" class="edit-color" value="${p.color || '#E891A4'}" />
+            </div>
+            <div class="admin-field">
+              <label>Emoji</label>
+              <input type="text" class="edit-emoji" value="${p.emoji || ''}" maxlength="4" />
+            </div>
+            <div class="admin-field full-width">
+              <label>Descripción</label>
+              <textarea class="edit-description" rows="2">${p.description || ''}</textarea>
+            </div>
+            <div class="admin-field full-width">
+              <label>Beneficios</label>
+              <input type="text" class="edit-benefit" value="${(p.benefit || '').replace(/"/g, '&quot;')}" />
+            </div>
+          </div>
+          <div class="admin-edit-form-actions">
+            <button class="btn btn-primary btn-sm admin-save-full" data-id="${p.product_id}">💾 Guardar todo</button>
+            <button class="btn btn-outline btn-sm admin-cancel-edit" data-id="${p.product_id}">Cancelar</button>
+          </div>
         </div>
       </div>
     `).join('');
@@ -448,6 +510,83 @@ async function loadProducts() {
         } catch (err) {
           alert('Error al subir la imagen: ' + err.message);
           label.innerHTML = originalContent;
+        }
+      });
+    });
+
+    // Edit button handlers (toggle edit form)
+    container.querySelectorAll('.admin-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const form = document.getElementById(`edit-form-${id}`);
+        if (!form) return;
+        const isOpen = form.style.display !== 'none';
+        // Close all other open forms first
+        container.querySelectorAll('.admin-edit-form').forEach(f => f.style.display = 'none');
+        form.style.display = isOpen ? 'none' : 'block';
+      });
+    });
+
+    // Cancel edit handlers
+    container.querySelectorAll('.admin-cancel-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const form = document.getElementById(`edit-form-${btn.dataset.id}`);
+        if (form) form.style.display = 'none';
+      });
+    });
+
+    // Full save handlers
+    container.querySelectorAll('.admin-save-full').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const card = btn.closest('.admin-product-card');
+        const form = document.getElementById(`edit-form-${id}`);
+
+        const catVal = form.querySelector('.edit-category').value;
+        const catSlugMap = { 'Rostro': 'rostro', 'Labios': 'labios', 'Ojos': 'ojos', 'Skin Care': 'skincare' };
+
+        const brandVal = form.querySelector('.edit-brand').value.trim();
+        const brandSlug = brandVal.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+        const updates = {
+          name: form.querySelector('.edit-name').value.trim(),
+          brand: brandVal,
+          brand_slug: brandSlug,
+          category: catVal,
+          category_slug: catSlugMap[catVal] || 'rostro',
+          type: form.querySelector('.edit-type').value.trim(),
+          tone: form.querySelector('.edit-tone').value.trim(),
+          badge: form.querySelector('.edit-badge').value || null,
+          color: form.querySelector('.edit-color').value,
+          emoji: form.querySelector('.edit-emoji').value.trim(),
+          description: form.querySelector('.edit-description').value.trim(),
+          benefit: form.querySelector('.edit-benefit').value.trim(),
+        };
+
+        btn.textContent = '⏳ Guardando...';
+        btn.disabled = true;
+
+        try {
+          await updateProduct(id, updates);
+          btn.textContent = '✅ Guardado';
+          // Update the card header with new info
+          card.querySelector('.admin-product-name').textContent = updates.name;
+          const metaEl = card.querySelector('.admin-product-meta');
+          metaEl.innerHTML = `
+            <span class="admin-brand">${updates.brand}</span>
+            ${updates.tone ? `<span class="admin-tone">· ${updates.tone}</span>` : ''}
+            ${updates.badge ? `<span class="admin-badge admin-badge-${updates.badge}">${updates.badge === 'bestseller' ? '⭐' : '🆕'} ${updates.badge}</span>` : ''}
+          `;
+          setTimeout(() => {
+            btn.textContent = '💾 Guardar todo';
+            btn.disabled = false;
+            form.style.display = 'none';
+          }, 1500);
+          invalidateProductCache();
+        } catch (err) {
+          btn.textContent = '❌ Error';
+          setTimeout(() => { btn.textContent = '💾 Guardar todo'; btn.disabled = false; }, 2000);
+          alert('Error al guardar: ' + err.message);
         }
       });
     });
