@@ -411,6 +411,43 @@
   border-radius: var(--radius-full);
 }
 
+.catalog-sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalog-sort-wrapper label {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-light);
+  white-space: nowrap;
+}
+
+.catalog-sort-select {
+  padding: 6px 28px 6px 12px;
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
+  font-family: inherit;
+  background: var(--clr-white);
+  color: var(--clr-text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.2s;
+}
+
+.catalog-sort-select:focus {
+  outline: none;
+  border-color: var(--clr-primary);
+}
+
+.catalog-sort-select:hover {
+  border-color: var(--clr-text-muted);
+}
+
 .no-results {
   text-align: center;
   padding: var(--sp-4xl);

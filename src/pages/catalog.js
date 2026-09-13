@@ -43,12 +43,23 @@ export function renderCatalog() {
           </div>
         </div>
 
-        <!-- Product Count -->
+        <!-- Product Count + Sort -->
         <div class="catalog-meta-row animate-fade-in delay-3">
           <span class="catalog-count" id="product-count">
             Cargando productos...
           </span>
-          <div class="catalog-notice">⚡ Todos listos para entrega inmediata</div>
+          <div class="catalog-sort-wrapper">
+            <label for="catalog-sort">Ordenar por:</label>
+            <select id="catalog-sort" class="catalog-sort-select">
+              <option value="default">Relevancia</option>
+              <option value="price-asc">Precio: menor a mayor</option>
+              <option value="price-desc">Precio: mayor a menor</option>
+              <option value="stock-desc">Más disponibles</option>
+              <option value="stock-asc">Menos disponibles</option>
+              <option value="name-asc">Nombre: A - Z</option>
+              <option value="name-desc">Nombre: Z - A</option>
+            </select>
+          </div>
         </div>
 
         <!-- Products Grid -->
@@ -81,10 +92,12 @@ export async function initCatalogFilters() {
   let activeBrand = 'all';
   let activeCategory = 'all';
   let searchQuery = '';
+  let activeSort = 'default';
 
   const catContainer = document.getElementById('category-filters');
   const brandContainer = document.getElementById('brand-filters');
   const searchInput = document.getElementById('catalog-search-input');
+  const sortSelect = document.getElementById('catalog-sort');
   const resetBtn = document.getElementById('btn-reset-filters');
   const grid = document.getElementById('catalog-products-grid');
   const countEl = document.getElementById('product-count');
@@ -131,6 +144,21 @@ export async function initCatalogFilters() {
     countEl.innerHTML = `Mostrando <strong>${grouped.length}</strong> productos disponibles`;
   }
 
+  // --- Sort logic ---
+  function sortProducts(list) {
+    if (activeSort === 'default') return list;
+    const sorted = [...list];
+    switch (activeSort) {
+      case 'price-asc':  return sorted.sort((a, b) => a.price - b.price);
+      case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
+      case 'stock-asc':  return sorted.sort((a, b) => a.stock - b.stock);
+      case 'stock-desc': return sorted.sort((a, b) => b.stock - a.stock);
+      case 'name-asc':   return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-desc':  return sorted.sort((a, b) => b.name.localeCompare(a.name));
+      default: return sorted;
+    }
+  }
+
   // --- Filter logic ---
   function filterProducts() {
     const q = searchQuery.toLowerCase().trim();
@@ -149,7 +177,7 @@ export async function initCatalogFilters() {
       return brandMatch && catMatch && searchMatch;
     });
 
-    const filteredGrouped = groupProducts(filtered);
+    const filteredGrouped = sortProducts(groupProducts(filtered));
 
     grid.style.opacity = '0';
     grid.style.transform = 'translateY(10px)';
@@ -284,11 +312,18 @@ export async function initCatalogFilters() {
     filterProducts();
   });
 
+  sortSelect?.addEventListener('change', (e) => {
+    activeSort = e.target.value;
+    filterProducts();
+  });
+
   resetBtn?.addEventListener('click', () => {
     activeBrand = 'all';
     activeCategory = 'all';
     searchQuery = '';
+    activeSort = 'default';
     if (searchInput) searchInput.value = '';
+    if (sortSelect) sortSelect.value = 'default';
 
     brandBtns.forEach(b => b.classList.toggle('active', b.dataset.brand === 'all'));
     catBtns.forEach(c => c.classList.toggle('active', c.dataset.category === 'all'));
